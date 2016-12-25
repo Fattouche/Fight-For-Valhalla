@@ -17,7 +17,7 @@ public class Character : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         float moveForward = Input.GetAxis("Vertical");
         float gravity = 20;
@@ -43,14 +43,14 @@ public class Character : MonoBehaviour
             {
                 animation.Play("Idle");
             }
-            
+
         }
-        else if(moveForward !=0 && !Input.GetKey(KeyCode.LeftShift))
+        else if (moveForward != 0 && !Input.GetKey(KeyCode.LeftShift))
         {
             animation.Play("Walk");
             cc.Move(moveDirection * (moveForward / 25));
         }
-        else if(moveForward != 0 && Input.GetKey(KeyCode.LeftShift))
+        else if (moveForward != 0 && Input.GetKey(KeyCode.LeftShift))
         {
             animation.Play("Run");
             cc.Move(moveDirection * (moveForward / 15));

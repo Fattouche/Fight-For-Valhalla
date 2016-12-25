@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
-public class CameraController : MonoBehaviour {
+public class CameraController : MonoBehaviour
+{
     // A mouselook behaviour with constraints which operate relative to
     // this gameobject's initial rotation.
     // Only rotates around local X and Y.
@@ -29,18 +30,25 @@ public class CameraController : MonoBehaviour {
     private Quaternion m_OriginalRotation;
 
     public Transform target;
+    private Vector3 offset1;
     public float angularSpeed;
     [SerializeField]
     [HideInInspector]
     private Vector3 initialOffset;
     private Vector3 currentOffset;
 
+    float minFov = 15f;
+    float maxFov = 90f;
+    float sensitivity = 15f;
+
 
     private void Start()
     {
         m_OriginalRotation = transform.localRotation;
         offset = transform.position - player.transform.position;
+        offset1 = new Vector3(target.position.x - 12, target.position.y + 1, target.position.z - 11);
         car = player.GetComponent<CharacterController>();
+
     }
 
     [ContextMenu("Set Current Offset")]
@@ -50,16 +58,23 @@ public class CameraController : MonoBehaviour {
         {
             return;
         }
-
         initialOffset = transform.position - target.position;
+    }
+
+    void LateUpdate()
+    {
+        offset1 = Quaternion.AngleAxis(Input.GetAxis("Mouse X") * rotationSpeed, Vector3.up) * offset1;
+        transform.position = target.position + offset1;
+        transform.LookAt(target.position);
     }
 
 
     private void Update()
     {
-        // we make initial calculations from the original local rotation
-        transform.localRotation = m_OriginalRotation;
-        transform.position = player.transform.position + offset;
+        float fov = Camera.main.fieldOfView;
+        fov -= Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        fov = Mathf.Clamp(fov, minFov, maxFov);
+        Camera.main.fieldOfView = fov;
 
         // read input from mouse or mobile controls
         float inputH;
@@ -72,7 +87,7 @@ public class CameraController : MonoBehaviour {
             // with mouse input, we have direct control with no springback required.
             m_TargetAngles.y += inputH * rotationSpeed;
             m_TargetAngles.x += inputV * rotationSpeed;
-     
+
         }
         else
         {
