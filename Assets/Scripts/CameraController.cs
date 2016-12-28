@@ -40,11 +40,13 @@ public class CameraController : MonoBehaviour
     float minFov = 15f;
     float maxFov = 90f;
     float sensitivity = 15f;
+    float startY;
 
 
     private void Start()
     {
         m_OriginalRotation = transform.localRotation;
+        startY = target.position.y;
         offset = transform.position - player.transform.position;
         offset1 = new Vector3(target.position.x - 12, target.position.y + 1, target.position.z - 11);
         car = player.GetComponent<CharacterController>();
@@ -75,6 +77,7 @@ public class CameraController : MonoBehaviour
         fov -= Input.GetAxis("Mouse ScrollWheel") * sensitivity;
         fov = Mathf.Clamp(fov, minFov, maxFov);
         Camera.main.fieldOfView = fov;
+        
 
         // read input from mouse or mobile controls
         float inputH;
