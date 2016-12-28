@@ -90,6 +90,7 @@ public class Character : MonoBehaviour
         energySlider.value = energy;
         cc.Move(moveDirection * (moveForward / divisor) );
         cc.Move(moveLeft * moveHorizontal / 20);
+        Debug.Log("test");
     }
 
     private void OnTriggerEnter(Collider other)
