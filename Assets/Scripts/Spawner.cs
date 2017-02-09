@@ -2,12 +2,13 @@
 using UnityEngine.UI;
 using System.Collections;
 
+//this is the spawner for all the enemies
 public class Spawner : MonoBehaviour
 {
-    public Character chara;       
+    public Character character;       
     public GameObject enemy;                
     public Transform[] spawnPoints;
-    private int time=5;
+    private int time = 5;
     private int waveCount = 1;
 
     private void Start()
@@ -15,9 +16,10 @@ public class Spawner : MonoBehaviour
         InitSpawn(10);
     }
 
+    //spawn in waves
     private void Update()
     {
-        if (chara.score >= 3 * waveCount)
+        if (character.score >= 3 * waveCount)
         {
             Spawn();
             waveCount++;
@@ -25,28 +27,29 @@ public class Spawner : MonoBehaviour
 
     }
 
-
+    //spwan depending on the characters score, ie higher score means more enemies
     void Spawn()
     {
-        // If the player has no health left...
-        if (chara.currentHealth <= 0)
+        // If the player has no health left we stop the game
+        if (character.currentHealth <= 0)
         {
             return;
         }
-        StartCoroutine(chara.showText(waveCount));
+        StartCoroutine(character.showText(waveCount));
         // Find a random index between zero and one less than the number of spawn points.
         int spawnPointIndex;
         // Create an instance of the enemy prefab at the randomly selected spawn point's position and rotation.
-        for (int i = 0; i < chara.score * 3; i++)
+        for (int i = 0; i < character.score * 3; i++)
         {
             spawnPointIndex = Random.Range(0, spawnPoints.Length - 1);
             Instantiate(enemy, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
         }
     }
 
+    //this is just so that we can spawn a fixed number of enemies at the start
     void InitSpawn(int enemies)
     {
-        StartCoroutine(chara.showText(waveCount));
+        StartCoroutine(character.showText(waveCount));
 
 
         int spawnPointIndex;
@@ -58,16 +61,4 @@ public class Spawner : MonoBehaviour
         waveCount++;
         
     }
-
-   /* IEnumerator showText(int waveCount)
-    {
-        waveText.gameObject.SetActive(true);
-        waveText.text = "Wave " + waveCount;
-        waveText.CrossFadeAlpha(0.0f, time, false);
-        yield return new WaitForSeconds(time);
-        waveText.CrossFadeAlpha(1.0f, time, false);
-        waveText.gameObject.SetActive(false);
-    }*/
-
-
 }

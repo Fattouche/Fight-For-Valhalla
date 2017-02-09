@@ -38,7 +38,7 @@ public class Character : MonoBehaviour
    
     public GameObject coin;
     
-
+    //initialize all the game variables
     void Start()
     {
         score = 0;
@@ -54,10 +54,12 @@ public class Character : MonoBehaviour
         currentHealth = startingHealth;
         playerAudio = GetComponent<AudioSource>();
         healthSlider.value = currentHealth;
+        //spawn all the coins
         for(int i=0;i<10;i++)
             spawnCoin();
     }
 
+    //used for rigidbodies 
     private void FixedUpdate()
     {
         Vector3 jump = Vector3.zero;
@@ -69,12 +71,14 @@ public class Character : MonoBehaviour
         cc.Move(jump * Time.fixedDeltaTime);
     }
 
+    //the main function of the game
     void Update()
     {
         float moveForward = Input.GetAxis("Vertical");
         float moveHorizontal = Input.GetAxis("Horizontal");
         Vector3 moveDirection = transform.TransformDirection(Vector3.forward);
         Vector3 moveLeft = transform.TransformDirection(Vector3.right);
+        //if right click set attacking animations
         if (Input.GetMouseButtonDown(1))
         {
             if (!spinning)
@@ -85,7 +89,7 @@ public class Character : MonoBehaviour
                 animation.SetTrigger("RoundKick");
             }
         }
-        if (moveForward == 0)
+        if (moveForward == 0) // if completely idle set all animations
         {
             animation.ResetTrigger("Walk");
             animation.ResetTrigger("Run");
@@ -93,14 +97,14 @@ public class Character : MonoBehaviour
             if (energy < 1000)
                 energy += 2;
         }
-        else if (moveForward != 0 && !Input.GetKey(KeyCode.LeftShift))
+        else if (moveForward != 0 && !Input.GetKey(KeyCode.LeftShift)) //if moving forward but not sprinting set animation
         {
             animation.SetTrigger("Walk");
             divisor = 15;
             if (energy < 1000)
                 energy += 1;
         }
-        else if (moveForward != 0 && Input.GetKey(KeyCode.LeftShift))
+        else if (moveForward != 0 && Input.GetKey(KeyCode.LeftShift)) //if sprinting set animation
         {
             if (energy > 0)
             {
@@ -121,12 +125,14 @@ public class Character : MonoBehaviour
         scoreText.text = "Score: " + score.ToString();
     }
 
+    //take damage for character
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         healthSlider.value = currentHealth;
     }
 
+    //if the character grabs a coin
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Coin"))
@@ -137,6 +143,7 @@ public class Character : MonoBehaviour
         }
     }
 
+    //attacking enemies
     public void meleeAttack(bool attacking)
     {
         if (attacking)
@@ -172,12 +179,14 @@ public class Character : MonoBehaviour
             }
         }
     }
+    //spawn the coin
     public void spawnCoin()
     {
         int spawnPointIndex = Random.Range(0, spawnPoints.Length);
         Instantiate(coin, spawnPoints[spawnPointIndex].position, spawnPoints[spawnPointIndex].rotation);
     }
 
+    //show the text for waves
     public IEnumerator showText(int waveCount)
     {
         waveText.gameObject.SetActive(true);

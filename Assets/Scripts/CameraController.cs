@@ -1,27 +1,19 @@
 ﻿
 using UnityEngine;
 
-
+//The main controller for the camera
 public class CameraController : MonoBehaviour
 {
-    // A mouselook behaviour with constraints which operate relative to
-    // this gameobject's initial rotation.
-    // Only rotates around local X and Y.
-    // Works in local coordinates, so if this object is parented
-    // to another moving gameobject, its local constraints will
-    // operate correctly
-    // (Think: looking out the side window of a car, or a gun turret
-    // on a moving spaceship with a limited angular range)
-    // to have no constraints on an axis, set the rotationRange to 360 or greater.
     public Vector2 rotationRange = new Vector3(360, 360);
     public float rotationSpeed = 5;
     public float dampingTime = 0.2f;
+
     public bool autoZeroVerticalOnMobile = true;
     public bool autoZeroHorizontalOnMobile = false;
     public bool relative = true;
  
     public GameObject player;
-    private CharacterController car;
+    private CharacterController character;
 
     private Vector3 m_TargetAngles;
     private Vector3 m_FollowAngles;
@@ -44,15 +36,14 @@ public class CameraController : MonoBehaviour
     float sensitivity = 15f;
     float startY;
 
-
+    //initialize the camera to follow the players position and rotation
     private void Start()
     {
         m_OriginalRotation = transform.localRotation;
         startY = target.position.y;
         offset = transform.position - player.transform.position;
         offset1 = new Vector3(target.position.x - 12, target.position.y + 1, target.position.z - 11);
-        car = player.GetComponent<CharacterController>();
-
+        character = player.GetComponent<CharacterController>();
     }
 
     [ContextMenu("Set Current Offset")]
@@ -65,6 +56,7 @@ public class CameraController : MonoBehaviour
         initialOffset = transform.position - target.position;
     }
 
+    //called after all the other updates have been called
     void LateUpdate()
     {
         offset1 = Quaternion.AngleAxis(Input.GetAxis("Mouse X") * rotationSpeed, Vector3.up) * offset1;
@@ -72,7 +64,7 @@ public class CameraController : MonoBehaviour
         transform.LookAt(target.position);
     }
 
-
+    //called throughout the game
     private void Update()
     {
         float fov = Camera.main.fieldOfView;
@@ -105,8 +97,8 @@ public class CameraController : MonoBehaviour
         m_FollowAngles = Vector3.SmoothDamp(m_FollowAngles, m_TargetAngles, ref m_FollowVelocity, dampingTime);
 
         // update the actual gameobject's rotation
-        car.GetComponent<CharacterController>().transform.localRotation = m_OriginalRotation * Quaternion.Euler(0, m_FollowAngles.y, 0);
-        car.GetComponent<CharacterController>().SimpleMove(new Vector3(0, Input.mousePosition.y, 0));
+        character.GetComponent<CharacterController>().transform.localRotation = m_OriginalRotation * Quaternion.Euler(0, m_FollowAngles.y, 0);
+        character.GetComponent<CharacterController>().SimpleMove(new Vector3(0, Input.mousePosition.y, 0));
     }
 }
 

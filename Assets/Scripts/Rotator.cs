@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//used to rotate the coins to tell the user they need to collect them
 public class Rotator : MonoBehaviour
 {
     private void Start()
