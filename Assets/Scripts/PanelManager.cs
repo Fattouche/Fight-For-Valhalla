@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
+//This file was found from an asset package made by Sami Heikkinen called pause controller
 public class PanelManager : MonoBehaviour {
 
 	public Animator initiallyOpen;
